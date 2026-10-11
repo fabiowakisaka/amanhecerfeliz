@@ -2,9 +2,9 @@ name: Publicar Bênção Diária
 
 on:
   schedule:
-    # Corre todos os dias às 07:00 UTC (04:00 da manhã em Brasília)
+    # 07:00 UTC corresponde às 04:00 da manhã no horário de Brasília
     - cron: '0 7 * * *'
-  workflow_dispatch: # Permite correr manualmente quando quiser testar com um clique
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -13,28 +13,28 @@ jobs:
   gerar-pagina:
     runs-on: ubuntu-latest
     steps:
-      - name: Obter o repositório
+      - name: Baixar repositório
         uses: actions/checkout@v4
 
-      - name: Configurar o Python
+      - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Instalar dependências
+      - name: Instalar biblioteca do Gemini
         run: |
           pip install google-generativeai
 
-      - name: Executar o script gerador
+      - name: Rodar script gerador com notícias e IA
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python gerador.py
 
-      - name: Guardar e enviar alterações no Git
+      - name: Salvar e enviar páginas no repositório
         run: |
           git config --global user.name "Amanhecer Feliz Bot"
           git config --global user.email "bot@amanhecerfeliz.com"
           git add -A
-          git commit -m "Publicação diária automatizada" || echo "Sem alterações para gravar"
+          git commit -m "Publicação diária automatizada" || echo "Sem alterações para salvar"
           git push
