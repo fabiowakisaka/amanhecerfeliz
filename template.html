@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amanhecer Feliz - {{TITULO}}</title>
   
+  <!-- Google tag (gtag.js) - Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9DX2WQL2X8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-9DX2WQL2X8');
+  </script>
+
   <!-- Open Graph para prévia rica no WhatsApp caso compartilhado por link -->
   <meta property="og:title" content="🌸 Bom Dia! A sua Bênção de Hoje chegou">
   <meta property="og:description" content="{{CHAMADA_ZAP}}">
@@ -136,15 +146,24 @@
     </footer>
   </main>
 
-  <!-- Script Inteligente de Compartilhamento com Suporte a Arquivo de Imagem -->
+  <!-- Script de Compartilhamento com Medição de Evento no GA4 -->
   <script>
     async function compartilharZap() {
+      // Dispara evento de compartilhamento para o Google Analytics
+      if (typeof gtag === 'function') {
+        gtag('event', 'share', {
+          method: 'WhatsApp',
+          content_type: 'bencao_diaria',
+          item_id: window.location.pathname
+        });
+      }
+
       const urlAtual = window.location.href;
       const texto = "🌸☕ Olha que bênção linda para o dia de hoje! Ler isso me fez um bem enorme e lembrei de você: " + urlAtual;
       const imgElement = document.getElementById('imagem-bencao');
       const btnTexto = document.getElementById('texto-btn');
 
-      // 1. Tenta compartilhamento nativo com o arquivo da imagem (celulares modernos)
+      // 1. Compartilhamento nativo com arquivo de imagem (celulares modernos)
       if (navigator.share && navigator.canShare && imgElement) {
         try {
           btnTexto.innerText = "Preparando cartão...";
@@ -163,13 +182,13 @@
             return;
           }
         } catch (erro) {
-          console.log("Compartilhamento nativo de arquivo não concluído, acionando fallback:", erro);
+          console.log("Compartilhamento nativo de arquivo não concluído:", erro);
         } finally {
           btnTexto.innerText = "Enviar bênção no WhatsApp";
         }
       }
 
-      // 2. Fallback tradicional: abre diretamente a conversa do WhatsApp com o link
+      // 2. Fallback direto para o WhatsApp
       window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(texto), '_blank');
     }
   </script>
