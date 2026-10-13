@@ -34,60 +34,95 @@ def obter_termometro_noticias():
 
 noticias_contexto = obter_termometro_noticias()
 
-# 4. Matriz com 12 Eixos Temáticos Anti-Repetição
+# 4. Matrizes de Variabilidade (O Motor Tridimensional de Caos Controlado)
+
+# 4.1. Eixos Temáticos
 ANGULOS = [
-    {"tema": "Acolhimento da Mente e Serenidade", "diretriz": "Foque no silêncio, em desacelerar pensamentos e esvaziar preocupações acumuladas."},
-    {"tema": "Gratidão Simples pelas Pequenas Coisas", "diretriz": "Foque na bênção da saúde, do teto, do pão à mesa e da vida que continua."},
-    {"tema": "Proteção, Firmeza e Blindagem do Lar", "diretriz": "Foque na oração como escudo para a família contra atritos ou notícias pesadas lá fora."},
-    {"tema": "Paciência, Confiança e o Tempo Certo", "diretriz": "Foque na sabedoria de esperar o momento certo e na entrega das causas difíceis."},
-    {"tema": "União Familiar e Bênção aos Filhos e Netos", "diretriz": "Foque em abençoar os passos dos mais jovens, no convívio pacífico e no afeto."},
-    {"tema": "Alívio da Solidão e Conforto do Coração", "diretriz": "Foque no acolhimento de quem se sente só, trazendo a presença de Deus como amparo."},
-    {"tema": "Sabedoria nas Palavras e Paz nos Relacionamentos", "diretriz": "Foque no valor do silêncio sábio, de não revidar ofensas e de manter a calma no lar."},
-    {"tema": "Renovação das Forças Físicas e Saúde", "diretriz": "Foque no alívio do corpo cansado, nas dores físicas e no ânimo para mais uma jornada."},
-    {"tema": "Entrega das Incertezas do Amanhã", "diretriz": "Foque em vencer a ansiedade com o futuro e com as contas, confiando na providência."},
-    {"tema": "A Força da Intercessão e Oração Silenciosa", "diretriz": "Foque no poder da prece feita no quarto em favor de quem amamos."},
-    {"tema": "Misericórdia e Perdão para Recomeçar", "diretriz": "Foque na leveza de não carregar culpas de erros passados e na chance de um novo dia."},
-    {"tema": "Alegria Serena e Gentileza com o Próximo", "diretriz": "Foque na beleza de espalhar palavras doces e ser um ponto de paz para os outros."}
+    {"tema": "O peso da segunda-feira", "diretriz": "Foque na preguiça natural e no peso de recomeçar a semana de trabalho."},
+    {"tema": "O dinheiro que encurta", "diretriz": "Foque na ansiedade de pagar os boletos e fazer a compra do mês render."},
+    {"tema": "Luto silencioso", "diretriz": "Foque na saudade de quem já partiu e na cadeira vazia à mesa."},
+    {"tema": "Cansaço de cuidar", "diretriz": "Foque na exaustão de quem sempre cuida de todos na família e esquece de si."},
+    {"tema": "Ingratidão e silêncio", "diretriz": "Foque na sabedoria de não responder a provocações no ambiente de trabalho ou em casa."},
+    {"tema": "Alegria nas frestas", "diretriz": "Foque em perceber um momento minúsculo de paz no meio da turbulência do dia."},
+    {"tema": "Paciência nas esperas", "diretriz": "Foque em manter a calma no trânsito, na fila do posto ou esperando uma notícia."},
+    {"tema": "Preocupação com filhos", "diretriz": "Foque na entrega invisível de pedir proteção para os filhos que saem para o mundo."},
+    {"tema": "Saúde e dores", "diretriz": "Foque nas dores no corpo, no joelho que estala, e na busca por ânimo físico."},
+    {"tema": "Culpa pelo passado", "diretriz": "Foque no alívio de perdoar a si mesmo por erros antigos que não podem ser mudados."},
+    {"tema": "Medo das notícias", "diretriz": "Foque na blindagem mental contra o excesso de tragédias da TV e do celular."},
+    {"tema": "Gratidão pelo teto", "diretriz": "Foque no simples alívio de ter uma porta para trancar à noite e um colchão para deitar."},
+    {"tema": "Amizades desgastadas", "diretriz": "Foque na aceitação de que algumas pessoas se afastam e isso faz parte da vida."},
+    {"tema": "Desacelerar o relógio", "diretriz": "Foque na sensação de que o ano está voando e a urgência de viver o hoje."},
+    {"tema": "A força do pão repartido", "diretriz": "Foque na beleza do pouco que, quando dividido com quem se ama, parece muito."}
 ]
 
-# Rotação temática diária baseada no dia do ano
-angulo_hoje = ANGULOS[hoje_dt.timetuple().tm_yday % len(ANGULOS)]
+# 4.2. Âncoras Sensoriais
+ANCORAS_DOMESTICAS = [
+    "o cheiro forte do pó de café recém-passado",
+    "o barulho do motor do ônibus ou dos carros logo cedo lá fora",
+    "o som da chave destrancando ou trancando o portão de casa",
+    "a água fria batendo no rosto na pia do banheiro",
+    "o pão na chapa ou a manteiga derretendo no café da manhã",
+    "a vassoura encostada ou o pano de prato secando na pia",
+    "o celular vibrando na mesa com as primeiras mensagens do dia",
+    "o sapato sendo calçado para mais um dia de luta",
+    "o cachorro latindo longe ou os passarinhos na janela",
+    "o relógio marcando aquela hora da madrugada em que o sono foge",
+    "a roupa balançando no varal com o vento da manhã",
+    "a xícara quente esquentando a palma da mão"
+]
+
+# 4.3. Esqueletos Narrativos
+ESQUELETOS = [
+    "Inicie com uma constatação seca e direta. Exemplo: 'A verdade é que tem dias que a gente acorda já querendo que a noite chegue.'",
+    "Inicie com uma pergunta franca para quem lê. Exemplo: 'Você também sentiu que a semana já começou exigindo demais da gente?'",
+    "Inicie descrevendo primeiramente a cena física da [ÂNCORA], sem falar de sentimentos na primeira frase.",
+    "Inicie usando a palavra 'Às vezes'. Exemplo: 'Às vezes o silêncio da casa fala mais alto que qualquer conselho.'",
+    "Inicie confessando uma teimosia humana comum. Exemplo: 'A gente tem a mania feia de querer controlar até o que não é nosso.'",
+    "Inicie com um tom de alívio. Exemplo: 'Graças a Deus a noite passou e o sol resolveu aparecer de novo para a nossa lida.'",
+    "Inicie com um imperativo carinhoso. Exemplo: 'Deixa a pressa do lado de fora da porta só por um minuto hoje.'"
+]
+
+# Sorteios dinâmicos usando a data como semente fixa para o dia
+random.seed(hoje_dt.strftime("%Y%m%d"))
+angulo_hoje = random.choice(ANGULOS)
+ancora_hoje = random.choice(ANCORAS_DOMESTICAS)
+esqueleto_hoje = random.choice(ESQUELETOS)
 
 # 5. Seleção de Imagem do Acervo
 imagens_dir = "imagens"
 todas_imagens = [f for f in os.listdir(imagens_dir) if f.lower().endswith(('.png', '.jpg', '.jpeg'))] if os.path.exists(imagens_dir) else []
 imagem_escolhida = random.choice(todas_imagens) if todas_imagens else "1.png"
 
-# 6. Chamada à IA
+# 6. Chamada à IA - Prompt Blindado e Neutro
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 prompt = f"""
-Você é um escritor devocional sênior brasileiro que escreve para mães, avós e famílias no WhatsApp.
-Data de hoje: {data_extenso}.
-Eixo temático obrigatório de hoje: {angulo_hoje['tema']}.
-Diretriz específica: {angulo_hoje['diretriz']}.
+Você é a voz sábia e acolhedora de uma família brasileira, escrevendo no WhatsApp para pessoas queridas. 
+O texto precisa soar como uma mensagem real repassada por um tio, uma avó ou um pai de família.
+Portanto, seja NEUTRO EM GÊNERO ao falar de si mesmo (use "a gente", "nós", "quem cuida", evitando "eu estou cansada/cansado"). 
 
-NOTÍCIAS RECENTES NO BRASIL (Use apenas como termômetro de sentimento coletivo da sociedade):
-{noticias_contexto}
+DADOS DO DIA:
+- Contexto nacional de hoje: {noticias_contexto}
+- Tema de hoje: {angulo_hoje['tema']} - {angulo_hoje['diretriz']}
 
-REGRAS EDITORIAIS RIGOROSAS:
-1. TEMPERO DE ATUALIDADES: Demonstre que você vive a realidade do Brasil hoje (compreende o custo de vida, a correria, as aflições ou o cansaço que estão no ar), mas NUNCA cite nomes de políticos, partidos, marcas ou tragédias violentas específicas.
-2. DUPLO OLHAR SOBRE ONTEM: Não afirme que ontem foi um dia pesado para todos. Acolha quem venceu (com gratidão) e quem lutou com cansaço (com alívio e renovação).
-3. PROIBIÇÃO CLIMÁTICA: NÃO mencione chuva, frio, calor ou sol forte (o Brasil tem climas diferentes e isso gera ruído).
-4. ANTI-CLICHÊ: NÃO inicie com frases gastas como "coloque a chaleira no fogo", "respire fundo", "uma folha em branco" ou "a dádiva de acordar". Varie a metáfora.
-5. PRECE ROBUSTA: A oração deve ser comovente, maternal e em primeira pessoa do singular, pedindo paz, saúde e proteção para o lar.
+REGRAS RÍGIDAS DE ENGENHARIA DE TEXTO (EVITE O "SOTAQUE DE IA"):
+1. ATERRAMENTO OBRIGATÓRIO: Inicie o texto aplicando o seguinte molde: "{esqueleto_hoje}".
+2. CENA VISUAL: Integre a seguinte imagem natural e sorrateiramente no primeiro parágrafo: "{ancora_hoje}".
+3. ASSIMETRIA BRUTAL: Proibido fazer listas de três itens (ex: "paz, amor e luz" ou "escutar, entender e abraçar"). Intercale frases bem curtas (3 palavras) com frases um pouco mais longas.
+4. GAFES DE IA (PROIBIDO USAR): jornada, tapeçaria, trama, inabalável, farol, resiliência, abraçar (sentido figurado), adentrar, dádiva, sublime, essência, tecer. Não use palavras difíceis ou poéticas demais. Use o português do dia a dia.
+5. PRECE SIMPLES: A oração final deve ser coloquial, como alguém que senta na cama e fala baixo com Deus.
 
-Retorne EXCLUSIVAMENTE um JSON puro no seguinte formato:
+Retorne EXCLUSIVAMENTE um JSON puro:
 {{
-  "chamada_zap": "Chamada magnética e curta (máximo 3 linhas) para legenda do WhatsApp que toque no sentimento atual e convide para a oração de hoje",
-  "titulo": "Título reconfortante e autêntico",
+  "chamada_zap": "Chamada (máx 2 linhas) amigável, instigando a ler",
+  "titulo": "Título com cara de reflexão diária (ex: O tempo de cada coisa)",
   "paragrafos": [
-    "Primeiro parágrafo: acolhimento da transição de ontem para hoje sob o eixo temático, demonstrando sintonia com a realidade do dia a dia.",
-    "Segundo parágrafo: reflexão profunda com sabedoria prática sobre a serenidade no lar e a confiança em Deus.",
-    "Terceiro parágrafo: palavras de ânimo, firmeza espiritual e calma para conduzir a família hoje."
+    "Parágrafo 1: A âncora visual e a constatação da vida.",
+    "Parágrafo 2: A reflexão principal focada no tema, sem romantizar as dificuldades.",
+    "Parágrafo 3: Fechamento curto e pé no chão."
   ],
-  "oracao": "Prece profunda e comovente em primeira pessoa, blindando a família, pedindo saúde e paz no coração.",
-  "versiculo": "Citação bíblica de esperança adequada ao tema de hoje com livro, capítulo e versículo"
+  "oracao": "Oração (máx 4 linhas). Neutra em gênero, pedindo pelos nossos.",
+  "versiculo": "Citação bíblica curta de embasamento com referência."
 }}
 """
 
@@ -98,15 +133,15 @@ try:
 except Exception as e:
     print(f"Erro na chamada da API Gemini: {e}. Usando texto de segurança.")
     conteudo = {
-        "chamada_zap": "🌸☕ Em meio a tantas correrias e notícias lá fora, que a nossa casa escolha a paz e a confiança hoje.",
-        "titulo": "A Certeza que Abriga o Nosso Lar",
+        "chamada_zap": "🌸☕ Em meio à correria, que a nossa casa escolha a paz hoje.",
+        "titulo": "A Calma Possível",
         "paragrafos": [
-            "Se o dia de ontem trouxe vitórias, que a nossa gratidão permaneça viva. Se trouxe cansaço ou preocupações com os nossos passos, que a certeza da proteção divina renove as forças neste amanhecer.",
-            "O mundo lá fora muitas vezes se enche de ruído e incertezas, mas a sabedoria da vida nos ensina a cuidar daquilo que está ao nosso alcance: o afeto da família, o pão compartilhado e a calma no coração.",
-            "Que o dia de hoje seja conduzido com paciência e fé inabalável, sabendo que cada oração sincera abre caminhos de amparo para os que amamos."
+            "A verdade é que tem dias que a gente acorda e o barulho dos carros lá fora já parece avisar que a luta vai ser grande. A cabeça enche de preocupações antes mesmo do café.",
+            "Mas a sabedoria de quem já viveu muito é saber escolher as batalhas. Não dá para abraçar o mundo com as mãos e não adianta sofrer pelo boleto que só vence semana que vem.",
+            "Faz o que dá conta hoje. O resto a gente entrega. Que o peso fique lá fora e a calma entre pela porta da frente."
         ],
-        "oracao": "Senhor, estende a Tua mão sobre a nossa mesa e sobre a saúde da minha família. Afasta qualquer discórdia e inquietação do nosso lar e concede-nos um dia sereno debaixo da Tua graça. Amém!",
-        "versiculo": "O Senhor é o meu refúgio e a minha fortaleza, o meu Deus, em quem confio. — Salmos 91:2"
+        "oracao": "Senhor, olha pelos nossos passos hoje. Livra a nossa mente da ansiedade, protege quem a gente ama na rua e traz todo mundo em segurança de volta para casa. Amém.",
+        "versiculo": "Entregue o seu caminho ao Senhor; confie nele, e ele o fará. — Salmos 37:5"
     }
 
 # 7. Carrega o Molde HTML
