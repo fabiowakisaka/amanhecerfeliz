@@ -5,10 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amanhecer Feliz - A Certeza que Abriga o Nosso Lar</title>
   
+  <!-- Google tag (gtag.js) - Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9DX2WQL2X8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-9DX2WQL2X8');
+  </script>
+
   <!-- Open Graph para prévia rica no WhatsApp caso compartilhado por link -->
   <meta property="og:title" content="🌸 Bom Dia! A sua Bênção de Hoje chegou">
   <meta property="og:description" content="🌸☕ Em meio a tantas correrias e notícias lá fora, que a nossa casa escolha a paz e a confiança hoje.">
-  <meta property="og:image" content="https://www.amanhecerfeliz.com/imagens/2.jpg">
+  <meta property="og:image" content="https://www.amanhecerfeliz.com/imagens/IMG-20260824-WA0189.jpg">
   <meta property="og:type" content="website">
 
   <!-- Tailwind CSS CDN -->
@@ -30,7 +40,7 @@
     <!-- Topo Acolhedor -->
     <header class="bg-gradient-to-b from-amber-100 to-amber-50 p-6 text-center border-b border-amber-200/50">
       <span class="inline-block bg-white text-amber-800 text-sm font-bold px-4 py-1 rounded-full shadow-sm mb-2 uppercase">
-        ☀️ Segunda-feira, 12 de Outubro de 2026
+        ☀️ Terça-feira, 13 de Outubro de 2026
       </span>
       <h1 class="serif-text text-2xl sm:text-3xl font-bold text-amber-950 leading-tight">
         Amanhecer Feliz
@@ -43,7 +53,7 @@
       <div class="rounded-2xl overflow-hidden shadow-sm border border-stone-200">
         <img 
           id="imagem-bencao"
-          src="./imagens/2.jpg" 
+          src="./imagens/IMG-20260824-WA0189.jpg" 
           alt="Cartão de Bom Dia" 
           crossorigin="anonymous"
           class="w-full h-auto object-cover"
@@ -136,15 +146,24 @@
     </footer>
   </main>
 
-  <!-- Script Inteligente de Compartilhamento com Suporte a Arquivo de Imagem -->
+  <!-- Script de Compartilhamento com Medição de Evento no GA4 -->
   <script>
     async function compartilharZap() {
+      // Dispara evento de compartilhamento para o Google Analytics
+      if (typeof gtag === 'function') {
+        gtag('event', 'share', {
+          method: 'WhatsApp',
+          content_type: 'bencao_diaria',
+          item_id: window.location.pathname
+        });
+      }
+
       const urlAtual = window.location.href;
       const texto = "🌸☕ Olha que bênção linda para o dia de hoje! Ler isso me fez um bem enorme e lembrei de você: " + urlAtual;
       const imgElement = document.getElementById('imagem-bencao');
       const btnTexto = document.getElementById('texto-btn');
 
-      // 1. Tenta compartilhamento nativo com o arquivo da imagem (celulares modernos)
+      // 1. Compartilhamento nativo com arquivo de imagem (celulares modernos)
       if (navigator.share && navigator.canShare && imgElement) {
         try {
           btnTexto.innerText = "Preparando cartão...";
@@ -163,13 +182,13 @@
             return;
           }
         } catch (erro) {
-          console.log("Compartilhamento nativo de arquivo não concluído, acionando fallback:", erro);
+          console.log("Compartilhamento nativo de arquivo não concluído:", erro);
         } finally {
           btnTexto.innerText = "Enviar bênção no WhatsApp";
         }
       }
 
-      // 2. Fallback tradicional: abre diretamente a conversa do WhatsApp com o link
+      // 2. Fallback direto para o WhatsApp
       window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(texto), '_blank');
     }
   </script>
