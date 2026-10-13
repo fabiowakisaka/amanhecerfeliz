@@ -10,9 +10,10 @@ import google.generativeai as genai
 API_KEY = os.environ.get("GEMINI_API_KEY")
 genai.configure(api_key=API_KEY)
 
-# 2. Tratamento de Datas
+# 2. Tratamento de Datas (Estrutura AAAA/MM/DD para pastas)
 hoje_dt = datetime.now()
-data_amigavel = hoje_dt.strftime("%d%m%Y")  # Ex: 12102026
+caminho_pasta = hoje_dt.strftime("%Y/%m/%d")  # Ex: 2026/10/13
+data_hoje_iso = hoje_dt.strftime("%Y-%m-%d")  # Ex: 2026-10-13 (Usado no Sitemap)
 
 dias_semana = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"]
 meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
@@ -114,16 +115,14 @@ with open("template.html", "r", encoding="utf-8") as f:
 
 reflexao_html = "".join([f"<p>{p}</p>" for p in conteudo["paragrafos"]])
 
-# 7.5 Carrega os Produtos Afiliados (Novidade)
+# 8. Carrega os Produtos Afiliados (Vitrine)
 try:
     with open("produtos.json", "r", encoding="utf-8") as f:
         produtos_afiliados = json.load(f)
-    # Rotaciona para sempre exibir um diferente, baseado no dia do ano
     dia_do_ano = hoje_dt.timetuple().tm_yday
     produto_hoje = produtos_afiliados[dia_do_ano % len(produtos_afiliados)]
 except Exception as e:
     print(f"Aviso ao carregar produtos.json: {e}")
-    # Produto de segurança caso o arquivo ainda não exista ou tenha erro
     produto_hoje = {
         "titulo": "Bíblia Sagrada Letra Hipergigante",
         "descricao": "Leitura confortável e descansada para os seus momentos de oração diária.",
@@ -131,13 +130,14 @@ except Exception as e:
         "link_shopee": "https://s.shopee.com.br/7AeIVV2Xnq"
     }
 
-# 8. Monta a Página da Subpasta do Dia (/11102026/index.html)
+# 9. Monta a Página da Subpasta do Dia com Pastas Aninhadas (AAAA/MM/DD)
+# Atenção ao IMAGEM_SRC apontando 3 níveis acima (../../../)
 html_subpasta = template \
     .replace("{{TITULO}}", conteudo["titulo"]) \
     .replace("{{DATA_EXTENSO}}", data_extenso) \
     .replace("{{CHAMADA_ZAP}}", conteudo["chamada_zap"]) \
     .replace("{{IMAGEM_PATH}}", f"imagens/{imagem_escolhida}") \
-    .replace("{{IMAGEM_SRC}}", f"../imagens/{imagem_escolhida}") \
+    .replace("{{IMAGEM_SRC}}", f"../../../imagens/{imagem_escolhida}") \
     .replace("{{REFLEXAO_HTML}}", reflexao_html) \
     .replace("{{ORACAO}}", conteudo["oracao"]) \
     .replace("{{VERSICULO}}", conteudo["versiculo"]) \
@@ -146,24 +146,42 @@ html_subpasta = template \
     .replace("{{PRODUTO_IMAGEM}}", produto_hoje["imagem_url"]) \
     .replace("{{PRODUTO_LINK}}", produto_hoje["link_shopee"])
 
-os.makedirs(data_amigavel, exist_ok=True)
-with open(f"{data_amigavel}/index.html", "w", encoding="utf-8") as f:
+os.makedirs(caminho_pasta, exist_ok=True)
+with open(f"{caminho_pasta}/index.html", "w", encoding="utf-8") as f:
     f.write(html_subpasta)
 
-# 9. Monta e Atualiza a Página Inicial da Raiz (index.html)
-html_raiz = html_subpasta.replace(f"../imagens/{imagem_escolhida}", f"./imagens/{imagem_escolhida}")
+# 10. Monta e Atualiza a Página Inicial da Raiz (index.html)
+html_raiz = html_subpasta.replace(f"../../../imagens/{imagem_escolhida}", f"./imagens/{imagem_escolhida}")
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_raiz)
 
-# 10. Salva o Texto Formatado para Envio Rápido no WhatsApp (Agora com domínio próprio!)
+# 11. Geração/Atualização Automática do XML de Sitemap (SEO Orgânico)
+sitemap_path = "sitemap.xml"
+url_diaria = f"https://www.amanhecerfeliz.com/{caminho_pasta}/"
+
+# Verifica se o sitemap já existe, senão, cria o esqueleto
+if os.path.exists(sitemap_path):
+    with open(sitemap_path, "r", encoding="utf-8") as f:
+        sitemap_content = f.read()
+else:
+    sitemap_content = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n</urlset>'
+
+# Injeta a nova URL apenas se ela ainda não estiver no sitemap
+if url_diaria not in sitemap_content:
+    nova_url_xml = f'  <url>\n    <loc>{url_diaria}</loc>\n    <lastmod>{data_hoje_iso}</lastmod>\n  </url>\n</urlset>'
+    sitemap_content = sitemap_content.replace('</urlset>', nova_url_xml)
+    with open(sitemap_path, "w", encoding="utf-8") as f:
+        f.write(sitemap_content)
+
+# 12. Salva o Texto Formatado para Envio Rápido no WhatsApp
 msg_zap = f"""🌸☕ BOM DIA COM PAZ E BÊNÇÃO! ☕🌸
 
 {conteudo['chamada_zap']}
 
 📖 Leia a oração do lar completa e pegue a bênção de hoje:
-👉 https://www.amanhecerfeliz.com/{data_amigavel}/"""
+👉 https://www.amanhecerfeliz.com/{caminho_pasta}/"""
 
 with open("mensagem_hoje.txt", "w", encoding="utf-8") as f:
     f.write(msg_zap)
 
-print(f"Sucesso: Páginas atualizadas para {data_amigavel} sob o eixo '{angulo_hoje['tema']}'! Produto rotativo: {produto_hoje['titulo']}")
+print(f"Sucesso: Páginas geradas em {caminho_pasta}. Sitemap atualizado. Produto rotativo: {produto_hoje['titulo']}")
