@@ -114,6 +114,23 @@ with open("template.html", "r", encoding="utf-8") as f:
 
 reflexao_html = "".join([f"<p>{p}</p>" for p in conteudo["paragrafos"]])
 
+# 7.5 Carrega os Produtos Afiliados (Novidade)
+try:
+    with open("produtos.json", "r", encoding="utf-8") as f:
+        produtos_afiliados = json.load(f)
+    # Rotaciona para sempre exibir um diferente, baseado no dia do ano
+    dia_do_ano = hoje_dt.timetuple().tm_yday
+    produto_hoje = produtos_afiliados[dia_do_ano % len(produtos_afiliados)]
+except Exception as e:
+    print(f"Aviso ao carregar produtos.json: {e}")
+    # Produto de segurança caso o arquivo ainda não exista ou tenha erro
+    produto_hoje = {
+        "titulo": "Bíblia Sagrada Letra Hipergigante",
+        "descricao": "Leitura confortável e descansada para os seus momentos de oração diária.",
+        "imagem_url": "https://down-br.img.susercontent.com/file/br-11134207-81z1k-mees0ay86fia59@resize_w900_nl.webp",
+        "link_shopee": "https://s.shopee.com.br/7AeIVV2Xnq"
+    }
+
 # 8. Monta a Página da Subpasta do Dia (/11102026/index.html)
 html_subpasta = template \
     .replace("{{TITULO}}", conteudo["titulo"]) \
@@ -123,7 +140,11 @@ html_subpasta = template \
     .replace("{{IMAGEM_SRC}}", f"../imagens/{imagem_escolhida}") \
     .replace("{{REFLEXAO_HTML}}", reflexao_html) \
     .replace("{{ORACAO}}", conteudo["oracao"]) \
-    .replace("{{VERSICULO}}", conteudo["versiculo"])
+    .replace("{{VERSICULO}}", conteudo["versiculo"]) \
+    .replace("{{PRODUTO_NOME}}", produto_hoje["titulo"]) \
+    .replace("{{PRODUTO_DESC}}", produto_hoje["descricao"]) \
+    .replace("{{PRODUTO_IMAGEM}}", produto_hoje["imagem_url"]) \
+    .replace("{{PRODUTO_LINK}}", produto_hoje["link_shopee"])
 
 os.makedirs(data_amigavel, exist_ok=True)
 with open(f"{data_amigavel}/index.html", "w", encoding="utf-8") as f:
@@ -134,15 +155,15 @@ html_raiz = html_subpasta.replace(f"../imagens/{imagem_escolhida}", f"./imagens/
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_raiz)
 
-# 10. Salva o Texto Formatado para Envio Rápido no WhatsApp
+# 10. Salva o Texto Formatado para Envio Rápido no WhatsApp (Agora com domínio próprio!)
 msg_zap = f"""🌸☕ BOM DIA COM PAZ E BÊNÇÃO! ☕🌸
 
 {conteudo['chamada_zap']}
 
 📖 Leia a oração do lar completa e pegue a bênção de hoje:
-👉 https://fabiowakisaka.github.io/amanhecerfeliz/{data_amigavel}/"""
+👉 https://www.amanhecerfeliz.com/{data_amigavel}/"""
 
 with open("mensagem_hoje.txt", "w", encoding="utf-8") as f:
     f.write(msg_zap)
 
-print(f"Sucesso: Páginas atualizadas para {data_amigavel} sob o eixo '{angulo_hoje['tema']}'!")
+print(f"Sucesso: Páginas atualizadas para {data_amigavel} sob o eixo '{angulo_hoje['tema']}'! Produto rotativo: {produto_hoje['titulo']}")
