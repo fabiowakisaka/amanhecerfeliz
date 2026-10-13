@@ -3,7 +3,7 @@ import json
 import random
 import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timedelta
 import google.generativeai as genai
 
 # 1. Configuração da API Gemini
@@ -115,6 +115,30 @@ with open("template.html", "r", encoding="utf-8") as f:
 
 reflexao_html = "".join([f"<p>{p}</p>" for p in conteudo["paragrafos"]])
 
+# 7.8 Lógica de Navegação Interna (Ontem e Hoje)
+ontem_dt = hoje_dt - timedelta(days=1)
+caminho_ontem = ontem_dt.strftime("%Y/%m/%d")
+
+if os.path.exists(caminho_ontem):
+    bloco_navegacao = f"""
+    <div class="flex justify-between items-center mt-8 pt-5 border-t border-amber-200/60">
+      <a href="/{caminho_ontem}/" class="text-amber-700 text-sm font-bold hover:text-amber-900 flex items-center gap-2 transition-colors">
+        &larr; Bênção de Ontem
+      </a>
+      <a href="/" class="text-amber-700 text-sm font-bold hover:text-amber-900 flex items-center gap-2 transition-colors">
+        Bênção de Hoje &rarr;
+      </a>
+    </div>
+    """
+else:
+    bloco_navegacao = f"""
+    <div class="flex justify-end items-center mt-8 pt-5 border-t border-amber-200/60">
+      <a href="/" class="text-amber-700 text-sm font-bold hover:text-amber-900 flex items-center gap-2 transition-colors">
+        Bênção de Hoje &rarr;
+      </a>
+    </div>
+    """
+
 # 8. Carrega os Produtos Afiliados (Vitrine)
 try:
     with open("produtos.json", "r", encoding="utf-8") as f:
@@ -131,7 +155,6 @@ except Exception as e:
     }
 
 # 9. Monta a Página da Subpasta do Dia com Pastas Aninhadas (AAAA/MM/DD)
-# Atenção ao IMAGEM_SRC apontando 3 níveis acima (../../../)
 html_subpasta = template \
     .replace("{{TITULO}}", conteudo["titulo"]) \
     .replace("{{DATA_EXTENSO}}", data_extenso) \
@@ -141,6 +164,7 @@ html_subpasta = template \
     .replace("{{REFLEXAO_HTML}}", reflexao_html) \
     .replace("{{ORACAO}}", conteudo["oracao"]) \
     .replace("{{VERSICULO}}", conteudo["versiculo"]) \
+    .replace("{{NAVEGACAO}}", bloco_navegacao) \
     .replace("{{PRODUTO_NOME}}", produto_hoje["titulo"]) \
     .replace("{{PRODUTO_DESC}}", produto_hoje["descricao"]) \
     .replace("{{PRODUTO_IMAGEM}}", produto_hoje["imagem_url"]) \
@@ -159,14 +183,12 @@ with open("index.html", "w", encoding="utf-8") as f:
 sitemap_path = "sitemap.xml"
 url_diaria = f"https://www.amanhecerfeliz.com/{caminho_pasta}/"
 
-# Verifica se o sitemap já existe, senão, cria o esqueleto
 if os.path.exists(sitemap_path):
     with open(sitemap_path, "r", encoding="utf-8") as f:
         sitemap_content = f.read()
 else:
     sitemap_content = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n</urlset>'
 
-# Injeta a nova URL apenas se ela ainda não estiver no sitemap
 if url_diaria not in sitemap_content:
     nova_url_xml = f'  <url>\n    <loc>{url_diaria}</loc>\n    <lastmod>{data_hoje_iso}</lastmod>\n  </url>\n</urlset>'
     sitemap_content = sitemap_content.replace('</urlset>', nova_url_xml)
@@ -184,4 +206,4 @@ msg_zap = f"""🌸☕ BOM DIA COM PAZ E BÊNÇÃO! ☕🌸
 with open("mensagem_hoje.txt", "w", encoding="utf-8") as f:
     f.write(msg_zap)
 
-print(f"Sucesso: Páginas geradas em {caminho_pasta}. Sitemap atualizado. Produto rotativo: {produto_hoje['titulo']}")
+print(f"Sucesso: Páginas geradas em {caminho_pasta}. Navegação inteligente criada. Sitemap atualizado.")
