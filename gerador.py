@@ -1,19 +1,26 @@
 import os
+import re
+import sys
 import json
+import html
 import random
 import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
-import google.generativeai as genai
+from google import genai
 
-# 1. Configuração da API Gemini
+# 1. Configuração Segura da Nova SDK Gemini
 API_KEY = os.environ.get("GEMINI_API_KEY")
-genai.configure(api_key=API_KEY)
+if not API_KEY:
+    print("ERRO CRÍTICO: A chave GEMINI_API_KEY não foi encontrada nos Secrets do GitHub.")
+    sys.exit(1)
+
+client = genai.Client(api_key=API_KEY)
 
 # 2. Tratamento de Datas (Estrutura AAAA/MM/DD para pastas)
 hoje_dt = datetime.now()
-caminho_pasta = hoje_dt.strftime("%Y/%m/%d")  # Ex: 2026/10/13
-data_hoje_iso = hoje_dt.strftime("%Y-%m-%d")  # Ex: 2026-10-13 (Usado no Sitemap)
+caminho_pasta = hoje_dt.strftime("%Y/%m/%d")  # Ex: 2026/10/14
+data_hoje_iso = hoje_dt.strftime("%Y-%m-%d")  # Ex: 2026-10-14 (Usado no Sitemap)
 
 dias_semana = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"]
 meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
@@ -94,8 +101,6 @@ todas_imagens = [f for f in os.listdir(imagens_dir) if f.lower().endswith(('.png
 imagem_escolhida = random.choice(todas_imagens) if todas_imagens else "1.png"
 
 # 6. Chamada à IA - Prompt Blindado e Neutro
-model = genai.GenerativeModel("gemini-1.5-flash")
-
 prompt = f"""
 Você é a voz sábia e acolhedora de uma família brasileira, escrevendo no WhatsApp para pessoas queridas. 
 O texto precisa soar como uma mensagem real repassada por um tio, uma avó ou um pai de família.
@@ -112,7 +117,7 @@ REGRAS RÍGIDAS DE ENGENHARIA DE TEXTO (EVITE O "SOTAQUE DE IA"):
 4. GAFES DE IA (PROIBIDO USAR): jornada, tapeçaria, trama, inabalável, farol, resiliência, abraçar (sentido figurado), adentrar, dádiva, sublime, essência, tecer. Não use palavras difíceis ou poéticas demais. Use o português do dia a dia.
 5. PRECE SIMPLES: A oração final deve ser coloquial, como alguém que senta na cama e fala baixo com Deus.
 
-Retorne EXCLUSIVAMENTE um JSON puro:
+Retorne EXCLUSIVAMENTE um JSON puro e válido (sem blocos markdown):
 {{
   "chamada_zap": "Chamada (máx 2 linhas) amigável, instigando a ler",
   "titulo": "Título com cara de reflexão diária (ex: O tempo de cada coisa)",
@@ -126,29 +131,79 @@ Retorne EXCLUSIVAMENTE um JSON puro:
 }}
 """
 
-try:
-    response = model.generate_content(prompt)
-    raw_text = response.text.strip().replace("```json", "").replace("```", "").strip()
-    conteudo = json.loads(raw_text)
-except Exception as e:
-    print(f"Erro na chamada da API Gemini: {e}. Usando texto de segurança.")
-    conteudo = {
-        "chamada_zap": "🌸☕ Em meio à correria, que a nossa casa escolha a paz hoje.",
-        "titulo": "A Calma Possível",
-        "paragrafos": [
-            "A verdade é que tem dias que a gente acorda e o barulho dos carros lá fora já parece avisar que a luta vai ser grande. A cabeça enche de preocupações antes mesmo do café.",
-            "Mas a sabedoria de quem já viveu muito é saber escolher as batalhas. Não dá para abraçar o mundo com as mãos e não adianta sofrer pelo boleto que só vence semana que vem.",
-            "Faz o que dá conta hoje. O resto a gente entrega. Que o peso fique lá fora e a calma entre pela porta da frente."
-        ],
-        "oracao": "Senhor, olha pelos nossos passos hoje. Livra a nossa mente da ansiedade, protege quem a gente ama na rua e traz todo mundo em segurança de volta para casa. Amém.",
-        "versiculo": "Entregue o seu caminho ao Senhor; confie nele, e ele o fará. — Salmos 37:5"
-    }
+# 6.1 Cascata de Modelos Failproof + Auto-Descoberta
+modelos_candidatos = [
+    "gemini-2.5-flash",
+    "gemini-3.0-flash",
+    "gemini-2.5-pro",
+    "gemini-2.0-flash"
+]
 
-# 7. Carrega o Molde HTML
+try:
+    for m in client.models.list():
+        nome_m = m.name.replace("models/", "")
+        if "gemini" in nome_m and ("flash" in nome_m or "pro" in nome_m):
+            if not any(x in nome_m for x in ["vision", "embedding", "audio", "tts", "image"]):
+                if nome_m not in modelos_candidatos:
+                    modelos_candidatos.append(nome_m)
+except Exception as e:
+    print(f"Aviso ao listar modelos secundários: {e}")
+
+conteudo = None
+chaves_obrigatorias = {"chamada_zap", "titulo", "paragrafos", "oracao", "versiculo"}
+
+for nome_modelo in modelos_candidatos:
+    try:
+        print(f"Tentando gerar reflexão com o modelo: {nome_modelo}...")
+        response = client.models.generate_content(
+            model=nome_modelo,
+            contents=prompt
+        )
+        raw_text = (response.text or "").strip()
+        if not raw_text:
+            continue
+
+        # Extração cirúrgica do bloco JSON
+        if "```" in raw_text:
+            partes = raw_text.split("```")
+            for p in partes:
+                if "{" in p and "}" in p:
+                    raw_text = p
+                    break
+        inicio = raw_text.find("{")
+        fim = raw_text.rfind("}")
+        if inicio != -1 and fim != -1:
+            raw_text = raw_text[inicio:fim + 1]
+
+        dados = json.loads(raw_text.strip())
+
+        # Valida se todas as chaves existem e se paragrafos é uma lista não vazia
+        if chaves_obrigatorias.issubset(dados.keys()) and isinstance(dados["paragrafos"], list) and len(dados["paragrafos"]) > 0:
+            conteudo = dados
+            print(f"✅ Reflexão gerada com sucesso usando {nome_modelo}!")
+            break
+    except Exception as e:
+        print(f"Aviso ao usar {nome_modelo}: {e}")
+
+# FAILPROOF: Se todos os modelos falharem, interrompe imediatamente para não publicar texto repetido
+if not conteudo:
+    print("❌ ERRO CRÍTICO: Todos os modelos da API Gemini falharam. Execução abortada para proteger o site contra conteúdo repetido.")
+    sys.exit(1)
+
+# 7. Carrega o Molde HTML e Sanitiza os Campos
 with open("template.html", "r", encoding="utf-8") as f:
     template = f.read()
 
-reflexao_html = "".join([f"<p>{p}</p>" for p in conteudo["paragrafos"]])
+paragrafos_limpos = []
+for p in conteudo["paragrafos"]:
+    p_sem_tags = re.sub(r'<[^>]+>', '', str(p)).strip()
+    paragrafos_limpos.append(f"<p>{html.escape(p_sem_tags)}</p>")
+
+reflexao_html = "".join(paragrafos_limpos)
+titulo_seguro = html.escape(str(conteudo["titulo"]).strip())
+chamada_segura = html.escape(str(conteudo["chamada_zap"]).strip())
+oracao_segura = html.escape(str(conteudo["oracao"]).strip())
+versiculo_seguro = html.escape(str(conteudo["versiculo"]).strip())
 
 # 7.8 Lógica de Navegação Interna (Ontem e Hoje)
 ontem_dt = hoje_dt - timedelta(days=1)
@@ -191,19 +246,19 @@ except Exception as e:
 
 # 9. Monta a Página da Subpasta do Dia com Pastas Aninhadas (AAAA/MM/DD)
 html_subpasta = template \
-    .replace("{{TITULO}}", conteudo["titulo"]) \
+    .replace("{{TITULO}}", titulo_seguro) \
     .replace("{{DATA_EXTENSO}}", data_extenso) \
-    .replace("{{CHAMADA_ZAP}}", conteudo["chamada_zap"]) \
+    .replace("{{CHAMADA_ZAP}}", chamada_segura) \
     .replace("{{IMAGEM_PATH}}", f"imagens/{imagem_escolhida}") \
     .replace("{{IMAGEM_SRC}}", f"../../../imagens/{imagem_escolhida}") \
     .replace("{{REFLEXAO_HTML}}", reflexao_html) \
-    .replace("{{ORACAO}}", conteudo["oracao"]) \
-    .replace("{{VERSICULO}}", conteudo["versiculo"]) \
+    .replace("{{ORACAO}}", oracao_segura) \
+    .replace("{{VERSICULO}}", versiculo_seguro) \
     .replace("{{NAVEGACAO}}", bloco_navegacao) \
-    .replace("{{PRODUTO_NOME}}", produto_hoje["titulo"]) \
-    .replace("{{PRODUTO_DESC}}", produto_hoje["descricao"]) \
-    .replace("{{PRODUTO_IMAGEM}}", produto_hoje["imagem_url"]) \
-    .replace("{{PRODUTO_LINK}}", produto_hoje["link_shopee"])
+    .replace("{{PRODUTO_NOME}}", html.escape(str(produto_hoje.get("titulo", "")))) \
+    .replace("{{PRODUTO_DESC}}", html.escape(str(produto_hoje.get("descricao", "")))) \
+    .replace("{{PRODUTO_IMAGEM}}", str(produto_hoje.get("imagem_url", ""))) \
+    .replace("{{PRODUTO_LINK}}", str(produto_hoje.get("link_shopee", "")))
 
 os.makedirs(caminho_pasta, exist_ok=True)
 with open(f"{caminho_pasta}/index.html", "w", encoding="utf-8") as f:
