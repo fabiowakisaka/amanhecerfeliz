@@ -5,6 +5,8 @@ on:
     # 06:40 UTC = 03:40 da manhã em Brasília (minuto quebrado para evitar fila no GitHub)
     - cron: '40 6 * * *'
   workflow_dispatch:
+  repository_dispatch:
+    types: [disparo-externo]
 
 permissions:
   contents: write
@@ -12,6 +14,10 @@ permissions:
 jobs:
   gerar-pagina:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: America/Sao_Paulo
+
     steps:
       - name: Baixar repositório
         uses: actions/checkout@v4
@@ -19,11 +25,11 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Instalar biblioteca do Gemini
         run: |
-          pip install google-generativeai
+          pip install google-genai
 
       - name: Rodar script gerador com notícias e IA
         env:
@@ -35,6 +41,6 @@ jobs:
         run: |
           git config --global user.name "Amanhecer Feliz Bot"
           git config --global user.email "bot@amanhecerfeliz.com"
+          git pull --rebase origin main || true
           git add -A
-          git commit -m "Publicação diária automatizada" || echo "Sem alterações para salvar"
-          git push
+          git diff --staged --quiet || (git commit -m "Publicação diária automatizada" && git push)
