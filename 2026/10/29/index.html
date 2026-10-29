@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amanhecer Feliz - O tempo das coisas na nossa vida</title>
+  
+  <!-- Google tag (gtag.js) - Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9DX2WQL2X8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-9DX2WQL2X8');
+  </script>
+
+  <!-- Open Graph para prévia rica no WhatsApp caso compartilhado por link -->
+  <meta property="og:title" content="🌸 Bom Dia! A sua Bênção de Hoje chegou">
+  <meta property="og:description" content="Bom dia, família! Dei uma olhada nas notícias e lembrei da gente hoje. Dá uma lida aqui.">
+  <meta property="og:image" content="https://www.amanhecerfeliz.com/imagens/IMG-20260920-WA0002.jpg">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Nunito', sans-serif; }
+    .serif-text { font-family: 'Lora', serif; }
+  </style>
+</head>
+<body class="bg-amber-50 text-stone-800 min-h-screen flex flex-col items-center p-3 sm:p-6">
+
+  <!-- Container Mobile-First -->
+  <main class="w-full max-w-xl bg-white rounded-3xl shadow-md border border-amber-100 overflow-hidden my-4 pb-8">
+    
+    <!-- Topo Acolhedor -->
+    <header class="bg-gradient-to-b from-amber-100 to-amber-50 p-6 text-center border-b border-amber-200/50">
+      <span class="inline-block bg-white text-amber-800 text-sm font-bold px-4 py-1 rounded-full shadow-sm mb-2 uppercase">
+        ☀️ Quinta-feira, 29 de Outubro de 2026
+      </span>
+      <h1 class="serif-text text-2xl sm:text-3xl font-bold text-amber-950 leading-tight">
+        Amanhecer Feliz
+      </h1>
+      <p class="text-stone-600 text-sm mt-1">Sua dose diária de paz, carinho e oração</p>
+    </header>
+
+    <!-- Imagem do Dia -->
+    <div class="p-4 sm:p-6 pb-2">
+      <div class="rounded-2xl overflow-hidden shadow-sm border border-stone-200">
+        <img 
+          id="imagem-bencao"
+          src="../../../imagens/IMG-20260920-WA0002.jpg" 
+          alt="Cartão de Bom Dia" 
+          crossorigin="anonymous"
+          class="w-full h-auto object-cover"
+        />
+      </div>
+
+      <!-- Botão Verde de Compartilhamento no WhatsApp -->
+      <button 
+        id="btn-compartilhar"
+        onclick="compartilharZap()" 
+        class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-lg active:scale-95 transition-all text-lg">
+        <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24">
+          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.586 1.838.88 2.791.88h.001c3.181 0 5.768-2.586 5.768-5.766 0-3.18-2.587-5.766-5.769-5.766zm9.969 5.766c0 5.518-4.482 10-10 10-1.748 0-3.385-.45-4.819-1.237l-5.181 1.359 1.383-5.053c-.886-1.485-1.383-3.218-1.383-5.069 0-5.518 4.482-10 10-10s10 4.482 10 10z"/>
+        </svg>
+        <span id="texto-btn">Enviar bênção no WhatsApp</span>
+      </button>
+    </div>
+
+    <!-- Reflexão Profunda do Dia -->
+    <article class="p-6 pt-4 text-stone-700 leading-relaxed text-lg">
+      <h2 class="serif-text text-2xl font-bold text-amber-900 mb-3">
+        O tempo das coisas na nossa vida
+      </h2>
+      
+      <div class="space-y-4">
+        <p>A verdade é que tem dias que a gente acorda já querendo que a noite chegue, com o celular vibrando na mesa com as primeiras mensagens do dia e aquela correria de sempre nas ruas.</p><p>A gente vê tanta coisa pesada no noticiário, desde ciclone lá fora até menino dodói se recuperando por milagre, e ainda tem que engolir impaciência no trânsito e na fila do posto. A vida não tá fácil pra ninguém, e o segredo é não deixar a cabeça ferver por pouco.</p><p>Respire fundo. O que é pra ser nosso, acha o caminho.</p>
+      </div>
+
+      <!-- Caixa da Oração Diária -->
+      <div class="bg-amber-100/60 rounded-2xl p-5 border-l-4 border-amber-600 my-6">
+        <h3 class="serif-text font-bold text-amber-950 text-xl mb-2 flex items-center gap-2">
+          🕊️ Oração da Manhã
+        </h3>
+        <p class="italic text-stone-800 text-lg leading-relaxed">
+          "Pai, segura nossa mão hoje para a gente não perder a cabeça com as pequenas chatices. Cuida de quem tá no trânsito e de quem espera uma boa notícia no hospital. Amém."
+        </p>
+      </div>
+
+      <!-- Versículo em Destaque -->
+      <p class="serif-text text-center text-amber-900 font-semibold bg-stone-50 py-3 px-4 rounded-xl border border-stone-200">
+        📖 Portanto, não vos inquieteis com o dia de amanhã. (Mateus 6:34)
+      </p>
+
+      <!-- Botões de Navegação (Ontem/Hoje) injetados pelo Python -->
+      
+    <div class="flex justify-between items-center mt-8 pt-5 border-t border-amber-200/60">
+      <a href="/2026/10/28/" class="text-amber-700 text-sm font-bold hover:text-amber-900 flex items-center gap-2 transition-colors">
+        &larr; Bênção de Ontem
+      </a>
+      <a href="/" class="text-amber-700 text-sm font-bold hover:text-amber-900 flex items-center gap-2 transition-colors">
+        Bênção de Hoje &rarr;
+      </a>
+    </div>
+    
+      
+    </article>
+
+    <!-- Vitrine de Afiliados (Dinâmica via JSON) -->
+    <section class="mt-4 px-6 pt-6 pb-2 border-t border-amber-200/60 bg-amber-50/40">
+      <div class="text-center mb-5">
+        <span class="text-xs font-bold text-amber-800 uppercase tracking-widest bg-amber-100 px-3 py-1 rounded-full">
+          Cantinho do Aconchego
+        </span>
+        <h3 class="serif-text font-bold text-stone-900 text-xl mt-2">
+          Dica especial para o seu momento de fé
+        </h3>
+      </div>
+
+      <div class="space-y-4">
+        <a href="https://s.shopee.com.br/6AllJf6Lpg" target="_blank" rel="noopener noreferrer" 
+           class="flex items-center gap-4 p-3 bg-white rounded-2xl border border-amber-200/80 shadow-sm hover:shadow-md transition-shadow group">
+          <div class="w-24 h-24 bg-white rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden border border-amber-100 p-1">
+            <img src="https://down-br.img.susercontent.com/file/br-11134207-7r98o-m2m2ax36nk0559@resize_w900_nl.webp" alt="Garrafa Térmica em Aço Inox" class="w-full h-full object-cover rounded-lg">
+          </div>
+          <div class="flex-grow">
+            <h4 class="font-bold text-stone-900 text-base leading-snug group-hover:text-amber-800">
+              Garrafa Térmica em Aço Inox
+            </h4>
+            <p class="text-xs text-stone-500 mt-1 leading-snug">Mantém seu café ou chá quentinho a manhã inteira para acompanhar suas preces em família.</p>
+            <span class="inline-block mt-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+              Ver oferta recomendada &rarr;
+            </span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Rodapé -->
+    <footer class="mt-8 text-center text-xs text-stone-400 px-4">
+      <p>Amanhecer Feliz © 2026 • Feito com carinho para abençoar o seu dia</p>
+    </footer>
+  </main>
+
+  <!-- Script de Compartilhamento com Medição de Evento no GA4 -->
+  <script>
+    async function compartilharZap() {
+      if (typeof gtag === 'function') {
+        gtag('event', 'share', {
+          method: 'WhatsApp',
+          content_type: 'bencao_diaria',
+          item_id: window.location.pathname
+        });
+      }
+
+      const urlAtual = window.location.href;
+      const texto = "🌸☕ Olha que bênção linda para o dia de hoje! Ler isso me fez um bem enorme e lembrei de você: " + urlAtual;
+      const imgElement = document.getElementById('imagem-bencao');
+      const btnTexto = document.getElementById('texto-btn');
+
+      if (navigator.share && navigator.canShare && imgElement) {
+        try {
+          btnTexto.innerText = "Preparando cartão...";
+          const response = await fetch(imgElement.src);
+          const blob = await response.blob();
+          const extensao = blob.type.includes('png') ? 'png' : 'jpg';
+          const file = new File([blob], `bencao_de_hoje.${extensao}`, { type: blob.type });
+
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Amanhecer Feliz',
+              text: texto
+            });
+            btnTexto.innerText = "Enviar bênção no WhatsApp";
+            return;
+          }
+        } catch (erro) {
+          console.log("Compartilhamento nativo não concluído:", erro);
+        } finally {
+          btnTexto.innerText = "Enviar bênção no WhatsApp";
+        }
+      }
+
+      window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(texto), '_blank');
+    }
+  </script>
+</body>
+</html>
